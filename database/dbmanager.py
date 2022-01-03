@@ -16,8 +16,11 @@ class DBManager:
         self._db = Database()
         self._db.connect()
         
-    def insert(self, uid, data):
-        self._db.insert(uid, data)
+    def insert_diary(self, uid, diary):
+        self._db.insert_diary(uid, diary)
+    
+    def get_all_diaries(self, uid, user):
+        self._db.get_all_diaries(uid, user)
         
     def update(self, uid, title, content):
         self._db.update(uid, title, content)
@@ -25,11 +28,8 @@ class DBManager:
     def delete(self, uid):
         self._db.delete(uid)
         
-    def find(self, data):
-        self._db.find(data)
-        
     def login(self, user_id, user_pw):
-        self._db.login(user_id, user_pw)
+        return self._db.login(user_id, user_pw)
     
     def register(self, user_id, user_pw):
         self._db.register(user_id, user_pw)

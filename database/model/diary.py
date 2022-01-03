@@ -1,13 +1,11 @@
 import datetime 
-from database.dbmanager import DBManager
-from database.model.user import User
 
 class Diary:
     
     def __init__(self):
-        
+        # model class 는 set get data에 대한 정보만 
         self.title = None
-        self.content = None
+        self.content = None 
         self.last_modified = None
         self.create_at = datetime.datetime.now().isoformat()
     
@@ -19,25 +17,23 @@ class Diary:
     
     def setLastModified(self, data):
         self.last_modified = data
-        
-    def insert(self, uid, title, content):
-        
-        diary = Diary()
-        diary.setTitle(title)        
-        diary.setContent(content)
-        diary.setLastModified("None")
-        
-        dbmanager = DBManager.getInstance()
-        dbmanager.insert(uid, diary)
-        
-    def find():
-        pass
-
-    def delete(self, uid):
-
-        dbmanager = DBManager.getInstance()
-        dbmanager.delete(uid)
     
-    def update(self, uid, title, content):
-        dbmanager = DBManager.getInstance()
-        dbmanager.update(uid, title, content)
+    def getTitle(self):
+        return self.title
+    
+    def getContent(self):
+        return self.content
+    
+    def getLastModified(self):
+        return self.last_modified
+    
+    def printInfo(self):
+        print("Diary Info")
+        print("Title : {title}\nContent : {content}\nlast_modified : {last_modified}\ncreate_at : {create_at}".format(
+            title=self.title, content=self.content, nlast_modified=self.last_modified, create_at=self.create_at))        
+        
+    def applyJson(self, data):
+        self.title = data.get('title', None)
+        self.content = data.get('content', None)
+        self.last_modified = data.get('last_modified', None)
+        self.create_at = data.get('create_at', None)
