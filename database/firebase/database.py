@@ -1,6 +1,6 @@
 import firebase_admin
-import datetime
 import json
+import datetime
 from firebase_admin import credentials, firestore, db
 from database.model.user import User
 
@@ -13,7 +13,6 @@ class Database:
     def __init__(self):
         self._client = None
         self._db = None
-        self._user = None
         
     def connect(self):
         self._client = firebase_admin.initialize_app(self.cred, {'databaseURL' : self.database_url})
@@ -25,15 +24,36 @@ class Database:
             print("Firebase : connect to Firebase")
             return True 
 
-    def insert(self):
-        pass 
+    def insert(self, uid, data):
+        
+        ref = db.reference('user/-{}/diary'.format(uid))
+        user = User()
+        user.setDiary(data)
+        
+        for data in user.getDiary():
+            print(data.__dict__) 
+            ref.push(data.__dict__)
+
+    def update(self, uid, title, content):
+        
+        ref = db.reference('user/-MsSY3AmHgiDWeE4j4Ys/diary/-{}'.format(uid))
+        
+        data = { 
+                'title':title,
+                'content':content,
+                'last_modified':datetime.datetime.now().isoformat()
+            }
+        
+        ref.update(data)
+                
+    def delete(self, uid):
     
-    def update(self):
-        pass
-    
-    def delete(self):
-        pass
-    
+        ref = db.reference('user/-MsSY3AmHgiDWeE4j4Ys/diary')
+        ref.child(uid).delete()
+        
+    def dtest(self, data):
+        print(data)
+        
     def find(self, data):
         ref = db.reference()
         user = ref.child(data).get()
@@ -50,22 +70,23 @@ class Database:
             print("존재하지 않는 계정입니다.")
         
         elif len(user_id_check) > 0:
-            self._user = User()
             
-            for user in user_id_check:
-                user_id = user.get('_id', None)
-                #user_pw = user.get('password', None)
+            user = User()
+            
+            for data in user_id_check:
+                user_id = data.get('_id', None)
+                user_pw = data.get('password', None)
+                
+                user.setId(user_id)
+                user.setPassword(user_pw)
+                user.setState(user.USER_STATE_CONNECT)
+                print("connect {} {} {}".format(user_id, user_pw, user.getState()))
                 
     def register(self, user_id, user_pw):
 
-        ref = db.reference('user')
+        user = User()
+        user.setId(user_id)
+        user.setPassword(user_pw)
         
-        now = datetime.datetime.now()
-        formatted_datetime = now.isoformat()
-        create_at = json.dumps(formatted_datetime)
-      
-        ref.push({
-            '_id' : user_id,
-            'password' : user_pw,
-            'create_at': create_at
-        })
+        ref = db.reference('user')
+        ref.push(user.__dict__)

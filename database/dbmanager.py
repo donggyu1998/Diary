@@ -16,14 +16,14 @@ class DBManager:
         self._db = Database()
         self._db.connect()
         
-    def insert(self):
-        self._db.insert()
+    def insert(self, uid, data):
+        self._db.insert(uid, data)
         
-    def update(self):
-        self._db.update()
+    def update(self, uid, title, content):
+        self._db.update(uid, title, content)
         
-    def delete(self):
-        self._db.delete()
+    def delete(self, uid):
+        self._db.delete(uid)
         
     def find(self, data):
         self._db.find(data)
