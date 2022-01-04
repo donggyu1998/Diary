@@ -2,13 +2,16 @@ import datetime
 
 class Diary:
     
-    def __init__(self):
-        # model class 는 set get data에 대한 정보만 
+    def __init__(self): # 유니크한 변수 : _ 가 앞에 붙음.
+        self._uid = None
         self.title = None
         self.content = None 
         self.last_modified = None
         self.create_at = datetime.datetime.now().isoformat()
     
+    def setUid(self, uid):
+        self._uid = uid 
+        
     def setTitle(self, data):
         self.title = data
     
@@ -17,6 +20,9 @@ class Diary:
     
     def setLastModified(self, data):
         self.last_modified = data
+    
+    def getUid(self):
+        return self._uid
     
     def getTitle(self):
         return self.title
@@ -28,9 +34,10 @@ class Diary:
         return self.last_modified
     
     def printInfo(self):
-        print("Diary Info")
-        print("Title : {title}\nContent : {content}\nlast_modified : {last_modified}\ncreate_at : {create_at}".format(
-            title=self.title, content=self.content, nlast_modified=self.last_modified, create_at=self.create_at))        
+        print ("************ Diary Info ************")
+        print("Title : {title}\nContent : {content}\nLast_modified : {last_modified}\nCreate_at : {create_at}".format(
+            title=self.title, content=self.content, last_modified=self.last_modified, create_at=self.create_at))     
+        print ("************************************")   
         
     def applyJson(self, data):
         self.title = data.get('title', None)

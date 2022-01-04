@@ -1,6 +1,7 @@
 
 import os
 import time
+import datetime
 from database.dbmanager import DBManager
 from database.model.diary import Diary
 from enum import Enum
@@ -13,98 +14,163 @@ class PageState(Enum):
 def page_login():
 
     print ("************ MENU LOGIN ************")
-    id = input("ID : ")
-    pw = input("PW : ")
+    print ("1) Login")
+    print ("2) Register")
     print ("************************************")
+    selected = int(input("Select : "))
+    
+    if selected == 1:
+        
+        id = input("ID : ")
+        pw = input("PW : ")
+        ret = dbmanager.login(id, pw)
 
-    ret = dbmanager.login(id, pw)
+        if ret is None:
+            input ("Pls Check ID/PW... ( if you want to retry, press enter. )")
 
-    if ret is None:
-        input ("Please Check ID/PW... ( if you want to retry, press enter. )")
-
-    return ret
-
+        return ret
+    
+    elif selected == 2:
+        
+        id = input("ID : ")
+        pw = input("PW : ")
+        
+        ret = dbmanager.register(id, pw)
+        
+        if ret is None:
+            input ("Pls Check ID/PW... ( if you want to retry, press enter. )")
+            
+        return ret
+    
 def page_diary(user):
+    
     print ("[ UserInfo : {}] ".format(user._id))
-    print ("************ MENU DIARY ************")
+    print ("************ Menu Diary ************")
     print ("1) Create new diary")
     print ("2) Find diary")
     print ("3) Delete diary")
+    print ("4) Update diary")
     print ("------------------------------------")
     print ("9) Logout")
     print ("************************************")
-    selected = int(input("select : "))
+    selected = int(input(" Select : "))
 
     ret = True
 
     if selected == 1:
-        print (" * Create new diary * ")
         
-        title = input(" - title : ")
-        content = input(" - content : ")
+        print (" * Create New Diary * ")
+        
+        title = input(" - Title : ")
+        content = input(" - Content : ")
 
         diary = Diary()
         diary.setTitle(title)
         diary.setContent(content)
-        dbmanager.insert_diary(user._uid, diary)
+        user.setDiary(diary)
+        
+        dbmanager.insertDiary(user._uid, diary)
 
-        print (" Successed Create New Diary ! ")
+        print (" Successed create new diary ! ")
 
     elif selected == 2:
-        print (" * Find diary * ")
-
-        diaries = dbmanager.find_all_diaries(user._uid, user)
-        diaries = []
+        
+        print (" * Find Diary * ")
+        diaries = user.getDiary()
         
         if len(diaries) == 0:
-            print (" Diary is Empty ")
+            print (" Diary is empty ")
             
         else:
+        
             for i in range(len(diaries)):
                 diary = diaries[i]
-                print ("{}) {} _ {}", i, diary.title, diary.created_at)
-
-            selected = int(input("selected : "))
-
+                print ("{}) Title : {} | Create_at : {} {}".format(i, diary.title, diary.create_at, diary._uid))
+            
+            selected = int(input("Select : "))
+                       
             if selected < len(diaries):
                 diary = diaries[selected]
                 diary.printInfo()
-                
+            
             else:
-                print ("~ index out of range exception ~")
+                print ("~ Index out of range exception ~")
 
         input ("Press enter key to continue...")
 
     elif selected == 3:
-        print (" * Delete diary * ")
-
-        diaries = dbmanager.get_all_diaries(user)
-        diaries = []
+        
+        print (" * Delete Diary * ")
+        diaries = user.getDiary()
 
         if len(diaries) == 0:
             print ("Diary is empty")
+            
         else:
+            
             for i in range(len(diaries)):
                 diary = diaries[i]
-                print ("{}) {} _ {}", i, diary.title, diary.created_at)
+                print ("{}) Title : {} | Create_at : {}".format(i, diary.title, diary.create_at))
 
-            selected = int(input("selected : "))
+            selected = int(input("Select : "))
 
             if selected < len(diaries):
                 diary = diaries[selected]
-                # delete diary
+                diaries.pop(selected)
+                dbmanager.deleteDiary(user._uid, diary._uid)
+                
             else:
-                print ("~ index out of range exception ~")
+                
+                print ("~ Index out of range exception ~")
 
         input ("Press enter key to continue...")
 
+    elif selected == 4:
+        
+        print (" * Update Diary * ")
+        diaries = user.diary
+        
+        if len(diaries) == 0:
+            print ("Diary is Empty")
+        
+        else:
+            
+            for i in range(len(diaries)):
+                diary =  diaries[i]
+                print ("{}) Title : {} | Create_at : {}".format(i, diary.title, diary.create_at))
+                
+            selected = int(input("Select : "))
+            
+            if selected < len(diaries):
+                diary = diaries[selected]
+                
+                title = input(" - Title : ")
+                content = input(" - Content : ")
+                
+                diary_items = diaries[selected]
+                diary_uid = diary_items.getUid()
+                
+                diary_items.setTitle(title)
+                diary_items.setContent(content)
+                diary_items.setLastModified(datetime.datetime.now().isoformat())
+                
+                dbmanager.updateDiary(user._uid, diary_uid, diary_items.getTitle(), diary_items.getContent(), diary_items.getLastModified())    
+                
+            else:
+                
+                print ("~ Index out of range exception ~")
+
+        input ("Press enter key to continue...")
+        
     elif selected == 9:
+        
         print ("LOGOUT ... ")
         user = None
         ret = False
 
     else:
-        print ("Plz select valid item...")
+        
+        print ("Pls select valid item...")
 
     return ret
 
@@ -114,7 +180,7 @@ def print_menu():
     global cur_page
     global user
 
-    #os.system('cls') # clear terminal
+    os.system('cls') # clear terminal
 
     if cur_page == PageState.PAGE_LOGIN:
         user = page_login()
