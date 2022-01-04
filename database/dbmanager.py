@@ -24,8 +24,8 @@ class DBManager:
         ret = self._db.deleteDiary(user_uid, diary_uid)
         return ret
     
-    def updateDiary(self, user_uid, diary_uid, title, content, diary_lastmodified):
-        ret = self._db.updateDiary(user_uid, diary_uid, title, content, diary_lastmodified)
+    def updateDiary(self, user_uid, diary_uid, title, content, last_modified):
+        ret = self._db.updateDiary(user_uid, diary_uid, title, content, last_modified)
         return ret
     
     def login(self, user_id, user_pw):
