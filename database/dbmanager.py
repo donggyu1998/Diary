@@ -16,22 +16,22 @@ class DBManager:
         self._db = Database()
         self._db.connect()
         
-    def insertDiary(self, user_uid, diary):
-        ret = self._db.insertDiary(user_uid, diary)
+    def insertDiary(self, user, diary):
+        ret = self._db.insertDiary(user, diary)
         return ret
     
-    def deleteDiary(self, user_uid, diary_uid):
-        ret = self._db.deleteDiary(user_uid, diary_uid)
+    def deleteDiary(self, user, diary_uid):
+        ret = self._db.deleteDiary(user, diary_uid)
         return ret
     
-    def updateDiary(self, user_uid, diary_uid, title, content, last_modified):
-        ret = self._db.updateDiary(user_uid, diary_uid, title, content, last_modified)
+    def updateDiary(self, user, diary_uid, title, content, last_modified):
+        ret = self._db.updateDiary(user, diary_uid, title, content, last_modified)
         return ret
     
-    def login(self, user_id, user_pw):
-        ret = self._db.login(user_id, user_pw)
+    def login(self, id, pw):
+        ret = self._db.login(id, pw)
         return ret
     
-    def register(self, user_id, user_pw):
-        ret = self._db.register(user_id, user_pw)
+    def register(self, id, pw):
+        ret = self._db.register(id, pw)
         return ret

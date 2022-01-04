@@ -22,25 +22,19 @@ class Database:
         else:
             return True 
 
-    def insertDiary(self, user_uid, diary):
-        ref = db.reference('user/{}/diary/'.format(user_uid))            
-        ref.push(diary.__dict__)
-        
-        snapshot = ref.get()
-
-        ret = User()
-        ret.refreshDiary(snapshot)
-        
-        return ret
+    def insertDiary(self, user, diary):
+        ref = db.reference('user/{}/diary/'.format(user.getUid()))            
+        child = ref.push(diary.__dict__)
+        diary.setUid(child.key)
             
-    def deleteDiary(self, user_uid, diary_uid):
-        ref = db.reference('user/{}/diary/{}'.format(user_uid, diary_uid))
+    def deleteDiary(self, user, diary_uid):
+        ref = db.reference('user/{}/diary/{}'.format(user.getUid(), diary_uid))
         ret = ref.delete()
         
         return ret 
     
-    def updateDiary(self, user_uid, diary_uid, title, content, last_modified):
-        ref = db.reference('user/{}/diary/{}'.format(user_uid, diary_uid))
+    def updateDiary(self, user, diary_uid, title, content, last_modified):
+        ref = db.reference('user/{}/diary/{}'.format(user.getUid(), diary_uid))
 
         diary = Diary()
         diary.setTitle(title)
@@ -52,46 +46,50 @@ class Database:
       
     def login(self, id, pw):
         ret = None
+        
         ref = db.reference('user')
         
-        snapshot_id = ref.order_by_child('_id').equal_to(id).get()
-        items = list(snapshot_id.values())
+        snapshot = ref.order_by_child('_id').equal_to(id).get()
+        items = list(snapshot.values())
 
         if len(items) <= 0:
-            print ("Error : Account exists, Try again. ")
+            print ("Error : Account is None or exists, Try again. ")
             
         else:
-            for check in items:
-                check_pw = check.get('password', None)
-            
-            if (pw != check_pw):
+            user_pw = items[0].get('password', None)
+
+            if (pw != user_pw):
                 print ("Error : The password is incorrect, Try again. ")
                 
             else:
                 ret = User()
                 ret.applyJson(items[0]) 
                 
-                user_uid = list(snapshot_id.keys())[0]
+                user_uid = list(snapshot.keys())[0]
                 ret.setUid(user_uid)
 
                 print ("Login Success. ")
                 
-            return ret
+        return ret
 
-    def register(self, user_id, user_pw):
+    def register(self, id, pw):
+        
         ref = db.reference('user')
 
-        snapshot_id = ref.order_by_child('_id').equal_to(user_id).get()
+        snapshot_id = ref.order_by_child('_id').equal_to(id).get()
         items = list(snapshot_id.values())
         
         if len(items) <= 0:
+            
             user = User()
-            user.setId(user_id)
-            user.setPassword(user_pw)
+            user.setId(id)
+            user.setPassword(pw)
             
             ref.push(user.__dict__)
             print ("Register Success. ")
-            
+
+            return True
+        
         else: 
             print ("Error : Account exists, Try again. ")
-        
+            return False

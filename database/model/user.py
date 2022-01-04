@@ -46,16 +46,17 @@ class User:
                 diary.setUid(key)
                 diary.applyJson(data)
                 self.diary.append(diary)
-                                
+                                                
     def applyJson(self, data):
         
         self._id = data.get('_id', None)
         self.password = data.get('password', None)
 
         dic_diary = data.get('diary', {})
-        self.diary = []
         
         if len(dic_diary) > 0:
+    
+            self.diary = []
 
             for key, data in dic_diary.items():
 

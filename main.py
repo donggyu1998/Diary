@@ -4,6 +4,7 @@ import time
 import datetime
 from database.dbmanager import DBManager
 from database.model.diary import Diary
+from database.model.user import User
 from pagestate import PageState
 
 def page_login():
@@ -20,7 +21,7 @@ def page_login():
 
         if ret is None:
             input ("Error : Pls Check ID/PW... ( If you want to retry, press enter. )")
-
+        
         return ret
     
     elif selected == 2:
@@ -29,9 +30,9 @@ def page_login():
         
         ret = dbmanager.register(id, pw)
         
-        if ret is None:
+        if ret is False:
             input ("Error : Pls Check ID/PW... ( If you want to retry, press enter. )")
-            
+
         return ret
     
 def page_diary(user):
@@ -60,7 +61,7 @@ def page_diary(user):
         diary.setContent(content)
         user.setDiary(diary)
         
-        dbmanager.insertDiary(user._uid, diary)
+        dbmanager.insertDiary(user, diary)
 
         print (" Info : Successed create new diary ! ")
 
@@ -74,7 +75,7 @@ def page_diary(user):
         else:
             for i in range(len(diaries)):
                 diary = diaries[i]
-                print (" {}) Title : {} | Create_at : {} {}".format(i, diary.title, diary.create_at, diary._uid))
+                print (" {}) Title : {} | Create_at : {} ".format(i, diary.title, diary.create_at))
             
             selected = int(input(" Select : "))
                        
@@ -104,7 +105,7 @@ def page_diary(user):
             if selected < len(diaries):
                 diary = diaries[selected]
                 diaries.pop(selected)
-                dbmanager.deleteDiary(user._uid, diary._uid)
+                dbmanager.deleteDiary(user, diary._uid)
                 
             else:
                 print ("Error : Index out of range exception. ")
@@ -138,10 +139,9 @@ def page_diary(user):
                 diary_items.setContent(content)
                 diary_items.setLastModified(datetime.datetime.now().isoformat())
                 
-                dbmanager.updateDiary(user._uid, diary_uid, diary_items.getTitle(), diary_items.getContent(), diary_items.getLastModified())    
+                dbmanager.updateDiary(user, diary_uid, diary_items.getTitle(), diary_items.getContent(), diary_items.getLastModified())    
                 
             else:
-                
                 print ("Error : Index out of range exception.")
 
         input ("Press enter key to continue...")
@@ -156,28 +156,29 @@ def page_diary(user):
 
     return ret
 
-
 def print_menu():
 
     global cur_page
     global user
 
-    # os.system('cls') # clear terminal
+    #os.system('cls') # clear terminal
 
     if cur_page == PageState.PAGE_LOGIN:
-        user = page_login()
         
-        if user is not None:
+        ret = page_login()
+        
+        if not ((ret is None) or (ret is True) or (ret is False)):
+            user = ret
             cur_page = PageState.PAGE_DIARY
-
-    elif cur_page == PageState.PAGE_DIARY:
-        ret = page_diary(user)
         
+    elif cur_page == PageState.PAGE_DIARY:
+        
+        ret = page_diary(user)
         if ret is False:
-            cur_page = PageState.PAGE_LOGIN        
-
+            cur_page = PageState.PAGE_LOGIN
+                  
     time.sleep(0.5)
-
+            
 user = None
 cur_page = PageState.PAGE_LOGIN
 
@@ -188,3 +189,5 @@ if __name__ == '__main__':
     while True:
         print_menu()
 
+
+        
