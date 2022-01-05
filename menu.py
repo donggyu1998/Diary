@@ -2,8 +2,20 @@ import datetime
 from database.dbmanager import DBManager
 from database.model.diary import Diary
 
-def login():
+def menuPageLogin():
+    print ("************ MENU Login ************")
+    print ("1) Login")
+    print ("2) Register")
+    print ("************************************")
+    selected = int(input("Select : "))
     
+    if selected == 1:
+        return menuLogin()
+
+    elif selected == 2:
+        return menuRegister()
+    
+def menuLogin():
     dbmanager = DBManager.getInstance()
         
     id = input("ID : ")
@@ -16,8 +28,7 @@ def login():
 
     return ret
 
-def register():
-    
+def menuRegister():
     dbmanager = DBManager.getInstance()
     
     id = input("ID : ")
@@ -26,11 +37,49 @@ def register():
     ret = dbmanager.register(id, pw)
     
     if ret is False:
+        
         input ("Error : Pls Check ID/PW... ( If you want to retry, press enter. )")
         
     return ret
 
+def menuPageDiary(user):
+    
+    print ("[ UserInfo : {}] ".format(user._id))
+    print ("************ Menu List ************")
+    print ("1) Create new diary")
+    print ("2) Find diary")
+    print ("3) Delete diary")
+    print ("4) Update diary")
+    print ("------------------------------------")
+    print ("9) Logout")
+    print ("************************************")
+    selected = int(input("Select : "))
+
+    ret = True
+    
+    if selected == 1:
+        createDiary(user)
+    
+    elif selected == 2:
+        findDiary(user)
+        
+    elif selected == 3:
+        deleteDiary(user)
+
+    elif selected == 4:
+        updateDiary(user)
+        
+    elif selected == 9:
+        user = None
+        return logout()
+
+    else:
+        print ("Pls select valid item...")
+
+    return ret
+
 def createDiary(user):
+    
     print (" * Create New Diary * ")
     
     title = input(" - Title : ")
@@ -47,6 +96,7 @@ def createDiary(user):
     print (" Info : Successed create new diary ! ")
         
 def findDiary(user):
+    
     print (" * Find Diary * ")
     
     diaries = user.getDiary()
@@ -71,7 +121,9 @@ def findDiary(user):
     input ("Press enter key to continue...")
         
 def deleteDiary(user):
+    
     print (" * Delete Diary * ")
+    
     diaries = user.getDiary()
     
     if len(diaries) == 0:
@@ -97,7 +149,9 @@ def deleteDiary(user):
     input ("Press enter key to continue...")
     
 def updateDiary(user):
+    
     print (" * Update Diary * ")
+    
     diaries = user.diary
     
     if len(diaries) == 0:
@@ -131,7 +185,8 @@ def updateDiary(user):
             
     input ("Press enter key to continue...")
     
-def logout(user):
+def logout():
     print ("LOGOUT ... ")
+    
     ret = False
     return ret

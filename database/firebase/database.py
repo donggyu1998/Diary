@@ -68,11 +68,10 @@ class Database:
                 ret.setUid(user_uid)
 
                 print ("Login Success. ")
-
+                
         return ret
 
     def register(self, id, pw):
-        
         ref = db.reference('user')
 
         snapshot = ref.order_by_child('_id').equal_to(id).get()
