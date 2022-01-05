@@ -2,7 +2,7 @@ import datetime
 
 class Diary:
     
-    def __init__(self): # 유니크한 변수 : _ 가 앞에 붙음.
+    def __init__(self):
         self._uid = None
         self.title = None
         self.content = None 
@@ -12,14 +12,14 @@ class Diary:
     def setUid(self, uid):
         self._uid = uid 
         
-    def setTitle(self, data):
-        self.title = data
+    def setTitle(self, title):
+        self.title = title
     
-    def setContent(self, data):
-        self.content = data
+    def setContent(self, content):
+        self.content = content
     
-    def setLastModified(self, data):
-        self.last_modified = data
+    def setLastModified(self, last_modified):
+        self.last_modified = last_modified
     
     def getUid(self):
         return self._uid

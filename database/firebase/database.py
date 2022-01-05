@@ -4,8 +4,7 @@ from database.model.diary import Diary
 from database.model.user import User
 
 class Database:
-    cert_file = "database/firebase/firebase_key.json"
-    cred = credentials.Certificate(cert_file)
+    cred = credentials.Certificate("database/firebase/firebase_key.json")
     database_url = "https://diary-73699-default-rtdb.firebaseio.com/"
     
     def __init__(self):
@@ -25,12 +24,12 @@ class Database:
     def insertDiary(self, user, diary):
         ref = db.reference('user/{}/diary/'.format(user.getUid()))            
         child = ref.push(diary.__dict__)
-        diary.setUid(child.key)
+        ret = diary.setUid(child.key)
+        return ret
             
     def deleteDiary(self, user, diary_uid):
         ref = db.reference('user/{}/diary/{}'.format(user.getUid(), diary_uid))
         ret = ref.delete()
-        
         return ret 
     
     def updateDiary(self, user, diary_uid, title, content, last_modified):
@@ -69,15 +68,15 @@ class Database:
                 ret.setUid(user_uid)
 
                 print ("Login Success. ")
-                
+
         return ret
 
     def register(self, id, pw):
         
         ref = db.reference('user')
 
-        snapshot_id = ref.order_by_child('_id').equal_to(id).get()
-        items = list(snapshot_id.values())
+        snapshot = ref.order_by_child('_id').equal_to(id).get()
+        items = list(snapshot.values())
         
         if len(items) <= 0:
             
