@@ -152,7 +152,7 @@ def updateDiary(user):
     
     print (" * Update Diary * ")
     
-    diaries = user.diary
+    diaries = user.getDiary()
     
     if len(diaries) == 0:
         print ("Info : Diary is empty.")
@@ -170,15 +170,15 @@ def updateDiary(user):
             title = input(" - Title : ")
             content = input(" - Content : ")
             
-            diary_items = diaries[selected]
-            diary_uid = diary_items.getUid()
+            diary = diaries[selected]
+            diary_uid = diary.getUid()
             
-            diary_items.setTitle(title)
-            diary_items.setContent(content)
-            diary_items.setLastModified(datetime.datetime.now().isoformat())
+            diary.setTitle(title)
+            diary.setContent(content)
+            diary.setLastModified(datetime.datetime.now().isoformat())
             
             dbmanager = DBManager.getInstance()
-            dbmanager.updateDiary(user, diary_uid, diary_items.getTitle(), diary_items.getContent(), diary_items.getLastModified())    
+            dbmanager.updateDiary(user, diary_uid, diary.getTitle(), diary.getContent(), diary.getLastModified())    
             
         else:
             print ("Error : Index out of range exception.")

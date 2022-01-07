@@ -1,4 +1,5 @@
 
+import os
 import time
 import menu
 from enum import Enum
@@ -27,7 +28,7 @@ def displayMenu():
         
         if ret is False: # 로그아웃했을 경우
             cur_page = PageState.PAGE_LOGIN
-
+        
 cur_page = PageState.PAGE_LOGIN
 user = None 
     
@@ -37,6 +38,6 @@ def main():
         os.system('cls')
         displayMenu()
         time.sleep(0.5)
-
+        
 if __name__ == '__main__':
     main()
