@@ -1,11 +1,9 @@
 # Diary 📖
-```
 일상에서의 경험, 생각, 감상 등 제반사항을 하루 단위로 기록하는 일기장이다. 
-```
 
 ## Skill ✨
 
-**Mode :** CLI.
+**Interface :** CLI.
 
 **Language :** Python.
 
