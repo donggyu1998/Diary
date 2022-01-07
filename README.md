@@ -10,7 +10,7 @@
 **NoSQL DB :** Firebase Realtime Database.
 
 ## Flowchart
-<img width="60%" src="https://user-images.githubusercontent.com/96862832/148567681-51c812a4-446d-4408-be65-4033abe59701.png"/>
+<img width="60%" src="https://user-images.githubusercontent.com/96862832/148573366-68aeeb1c-81cf-4367-89b0-0eaa55ca3bf2.png"/>
 
 # Demo 
 <img width="60%" src="https://user-images.githubusercontent.com/96862832/148566442-3f12a58e-902d-46dc-9131-d04d99bbd521.gif"/>
