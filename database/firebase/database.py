@@ -5,7 +5,7 @@ from database.model.user import User
 
 class Database:
     cred = credentials.Certificate("database/firebase/firebase_key.json")
-    database_url = "https://diary-73699-default-rtdb.firebaseio.com/"
+    database_url = "firebase realtime database url"
     
     def __init__(self):
         self._client = None
